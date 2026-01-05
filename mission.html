@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Horror King - Missions</title>
+<link href="https://fonts.googleapis.com/css2?family=Nosifer&family=Orbitron:wght@500&display=swap" rel="stylesheet">
+
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Orbitron', sans-serif;}
+html, body { width:100%; height:100%; overflow-x:hidden; background:#000; }
+
+body {
+  background: url('images/background.jpg') center/cover no-repeat;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  padding-top:40px;
+}
+
+/* 🔮 Title */
+h1 {
+  color: crimson;
+  font-family:'Nosifer', cursive;
+  font-size: 50px;
+  text-shadow: 0 0 10px red, 0 0 20px crimson;
+  margin-bottom: 40px;
+}
+
+/* 🎴 Cards Grid */
+.level-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 30px;
+  width: 90%;
+  max-width: 1200px;
+}
+
+/* 🩸 Individual Card */
+.level-card {
+  background: rgba(0,0,0,0.65);
+  border: 2px solid crimson;
+  border-radius: 12px;
+  padding: 20px;
+  text-align:center;
+  color: gold;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px crimson;
+}
+
+.level-card img {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 0 10px red);
+  transition: all 0.3s ease;
+}
+
+.level-card:hover {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 0 25px gold, 0 0 50px crimson;
+}
+
+.level-card:hover img {
+  filter: drop-shadow(0 0 20px gold) brightness(1.2);
+}
+
+/* 🔙 Back Button (Top Left) */
+.back-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  padding: 10px 22px;
+  border: 2px solid gold;
+  color: gold;
+  background: rgba(0,0,0,0.7);
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.back-btn:hover {
+  background: gold;
+  color: #000;
+  box-shadow: 0 0 20px gold;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🔊 Audio -->
+<audio id="missionSound" src="sound/mission.mp3" loop></audio>
+<audio id="clickSound" src="sound/click.mp3"></audio>
+
+<a class="back-btn" href="home.html"> << BACK TO HOME</a>
+
+<h1>MISSIONS</h1>
+
+<div class="level-grid">
+  <div class="level-card" onclick="openLevel(1)">
+    <img src="images/enemy1.png">
+    <div>LEVEL 1</div>
+  </div>
+  <div class="level-card" onclick="openLevel(2)">
+    <img src="images/enemy2.png">
+    <div>LEVEL 2</div>
+  </div>
+  <div class="level-card" onclick="openLevel(3)">
+    <img src="images/enemy3.png">
+    <div>LEVEL 3</div>
+  </div>
+  <div class="level-card" onclick="openLevel(4)">
+    <img src="images/enemy4.png">
+    <div>LEVEL 4</div>
+  </div>
+  <div class="level-card" onclick="openLevel(5)">
+    <img src="images/enemy5.png">
+    <div>LEVEL 5</div>
+  </div>
+  <div class="level-card" onclick="openLevel(6)">
+    <img src="images/enemy6.png">
+    <div>LEVEL 6</div>
+  </div>
+  <div class="level-card" onclick="openLevel(7)">
+    <img src="images/enemy7.png">
+    <div>LEVEL 7</div>
+  </div>
+  <div class="level-card" onclick="openLevel(8)">
+    <img src="images/enemy8.png">
+    <div>LEVEL 8</div>
+  </div>
+</div>
+
+<script>
+const missionSound = document.getElementById("missionSound");
+const clickSound = document.getElementById("clickSound");
+
+// 🔊 Play mission sound on page load
+window.addEventListener("DOMContentLoaded", () => {
+  missionSound.play().catch(() => {
+    document.body.addEventListener("click", () => missionSound.play(), { once: true });
+  });
+});
+
+// 🎮 Level click
+function openLevel(level) {
+  clickSound.currentTime = 0;
+  clickSound.play();
+
+  setTimeout(() => {
+    window.location.href = `play.html?level=${level}`;
+  }, 200);
+}
+</script>
+
+</body>
+</html>

@@ -1,1 +1,196 @@
-<h1>Shop page<h1/>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Shadow Market – Health Shop</title>
+
+<style>
+:root{
+  --bg-top:#2b0000;
+  --bg-bottom:#0f0505;
+  --panel:#111;
+  --accent:#ff4444;
+  --gold:#ffcc00;
+}
+
+body{
+  margin:0;
+  height:100vh;
+  background:linear-gradient(to bottom,var(--bg-top),var(--bg-bottom));
+  font-family:monospace;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:#ddd;
+}
+
+/* ===== HUD ===== */
+.hud{
+  position:absolute;
+  top:20px;
+  left:20px;
+}
+
+.bar{
+  width:200px;
+  height:18px;
+  background:#333;
+  border-radius:10px;
+  overflow:hidden;
+  margin-bottom:8px;
+}
+
+.health{
+  height:100%;
+  width:70%;
+  background:linear-gradient(to right,#ff0000,#ff7777);
+  transition:.3s;
+}
+
+.gold{
+  color:var(--gold);
+}
+
+/* ===== SHOP BUTTON ===== */
+.shop-btn{
+  position:absolute;
+  top:20px;
+  right:20px;
+  background:#222;
+  color:#fff;
+  border:1px solid #444;
+  padding:10px 16px;
+  cursor:pointer;
+  letter-spacing:2px;
+}
+
+.shop-btn:hover{
+  background:#333;
+}
+
+/* ===== POPUP ===== */
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.7);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:100;
+}
+
+.shop{
+  width:340px;
+  background:var(--panel);
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 0 30px rgba(0,0,0,.8);
+}
+
+.shop h2{
+  margin-top:0;
+  text-align:center;
+  letter-spacing:2px;
+}
+
+.item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px;
+  background:#1a1a1a;
+  border-radius:8px;
+  margin-bottom:10px;
+}
+
+.item button{
+  background:var(--accent);
+  border:none;
+  padding:6px 12px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.item button:disabled{
+  background:#555;
+  cursor:not-allowed;
+}
+
+.close{
+  text-align:center;
+  margin-top:10px;
+  cursor:pointer;
+  opacity:.6;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HUD -->
+<div class="hud">
+  <div class="bar">
+    <div class="health" id="healthBar"></div>
+  </div>
+  <div class="gold">Gold: <span id="gold">150</span></div>
+</div>
+
+<!-- SHOP BUTTON -->
+<button class="shop-btn" onclick="openShop()">SHOP</button>
+
+<!-- SHOP POPUP -->
+<div class="overlay" id="overlay">
+  <div class="shop">
+    <h2>HEALTH MARKET</h2>
+
+    <div class="item">
+      <span>🩸 Health Potion (+20)</span>
+      <button onclick="buy(20,30)">30</button>
+    </div>
+
+    <div class="item">
+      <span>🛡 Shield Boost (+10)</span>
+      <button onclick="buy(10,20)">20</button>
+    </div>
+
+    <div class="item">
+      <span>💊 Mega Heal (+40)</span>
+      <button onclick="buy(40,60)">60</button>
+    </div>
+
+    <div class="close" onclick="closeShop()">Close</div>
+  </div>
+</div>
+
+<script>
+let health = 70;
+let gold = 150;
+
+const healthBar = document.getElementById("healthBar");
+const goldEl = document.getElementById("gold");
+const overlay = document.getElementById("overlay");
+
+function openShop(){
+  overlay.style.display = "flex";
+}
+
+function closeShop(){
+  overlay.style.display = "none";
+}
+
+function buy(hpGain, price){
+  if(gold < price){
+    alert("Not enough gold!");
+    return;
+  }
+
+  gold -= price;
+  health = Math.min(100, health + hpGain);
+
+  goldEl.textContent = gold;
+  healthBar.style.width = health + "%";
+}
+</script>
+
+</body>
+</html>

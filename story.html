@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Horror King – Story</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Nosifer&family=Orbitron&display=swap" rel="stylesheet">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  width:100vw;
+  height:100vh;
+  background:no-repeat center center/cover;
+  transition: background-image 1s ease-in-out;
+  overflow:hidden;
+  font-family:'Orbitron', sans-serif;
+}
+
+/* 🔥 Dark Horror Overlay */
+.overlay{
+  position:absolute;
+  inset:0;
+  background: radial-gradient(circle, rgba(0,0,0,0.6), rgba(0,0,0,0.95));
+}
+
+/* 🧍 Character Area */
+.characters{
+  position:absolute;
+  top:0;
+  width:100%;
+  height:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 60px;
+  pointer-events:none;
+}
+
+/* Hero */
+.hero{
+  height:80%;
+  animation: heroIdle 3s infinite alternate;
+}
+
+/* Villain */
+.villain{
+  width:32%;
+  filter: drop-shadow(0 0 25px red);
+  animation: villainIdle 2s infinite alternate;
+}
+
+/* 📜 Dialogue Box */
+.dialogue-box{
+  position:absolute;
+  bottom:10px;
+  left:50%;
+  transform:translateX(-50%);
+  width:85%;
+  padding:20px;
+  background: rgba(10,0,0,0.92);
+  border:2px solid #ff2a00;
+  box-shadow:0 0 30px #ff2a00;
+  border-radius:12px;
+}
+
+/* Speaker Name */
+.speaker{
+  font-family:'Nosifer', cursive;
+  color:#ff3c00;
+  font-size:24px;
+  margin-bottom:10px;
+  text-shadow:0 0 10px red;
+}
+
+/* Dialogue Text */
+.text{
+  color:#f1f1f1;
+  font-size:18px;
+  line-height:1.6;
+  min-height:80px;
+}
+
+/* Next Button */
+.next-btn{
+  margin-top:15px;
+  float:right;
+  padding:12px 30px;
+  background: linear-gradient(45deg,#ff0000,#8b0000);
+  border:none;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+  border-radius:8px;
+  box-shadow:0 0 20px red;
+  animation: glow 1.5s infinite alternate;
+}
+
+.next-btn:hover{
+  transform:scale(1.08);
+}
+
+/* 🔥 Animations */
+@keyframes glow{
+  from{box-shadow:0 0 10px red;}
+  to{box-shadow:0 0 25px orange;}
+}
+
+@keyframes heroIdle{
+  from{transform:translateY(0);}
+  to{transform:translateY(-8px);}
+}
+
+@keyframes villainIdle{
+  from{transform:translateY(0) scale(1);}
+  to{transform:translateY(-10px) scale(1.03);}
+}
+</style>
+</head>
+
+<body>
+
+<div class="overlay"></div>
+
+<!-- CHARACTERS -->
+<div class="characters">
+  <img src="images/hero.png" class="hero">
+  <img src="images/villain.png" class="villain">
+</div>
+
+<!-- DIALOGUE -->
+<div class="dialogue-box">
+  <div class="speaker" id="speaker"></div>
+  <div class="text" id="text"></div>
+  <button class="next-btn" onclick="nextDialogue()">NEXT</button>
+</div>
+
+<audio id="clickSound" src="sound/click.mp3"></audio>
+<audio id="typeSound" src="sound/typing.mp3"></audio>
+
+<script>
+/* 🔥 BACKGROUND IMAGES */
+const backgrounds = [
+  "images/bg-fire.png",
+  "images/bg-village-burn.png",
+  "images/bg-dark-castle.png",
+  "images/bg-blood-moon.jpg",
+  "images/bg-ruins.png",
+  "images/bg-final-gate.jpg"
+];
+
+const dialogues = [
+  { speaker:"VILLAIN KING", text:"Hear that, little knight? This is the sound of a village learning fear." },
+  { speaker:"HERO", text:"Release the child. Your reign of terror ends tonight." },
+  { speaker:"VILLAIN KING", text:"You arrived late. Their homes burned fast… just like hope." },
+  { speaker:"HERO", text:"Homes can be rebuilt. Lives can heal. But your soul is beyond saving." },
+  { speaker:"HERO", text:"You made one mistake. You touched the innocent." },
+  { speaker:"VILLAIN KING", text:"One step closer… and the child screams. Try to stop me." }
+];
+
+let index = 0;
+let typing = false;
+
+const speakerEl = document.getElementById("speaker");
+const textEl = document.getElementById("text");
+const clickSound = document.getElementById("clickSound");
+const typeSound = document.getElementById("typeSound");
+
+/* 🔊 AUDIO CONTEXT FOR DEVIL EFFECT */
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+/* 👿 DEVIL GROWL EFFECT */
+function playDevilGrowl(){
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  const delay = audioCtx.createDelay();
+
+  osc.type = "sawtooth";
+  osc.frequency.value = 30; // LOW DEMON GROWL
+  gain.gain.value = 0.02;
+  delay.delayTime.value = 0.22;
+
+  osc.connect(gain);
+  gain.connect(delay);
+  delay.connect(audioCtx.destination);
+
+  osc.start();
+  setTimeout(() => osc.stop(), 1200);
+}
+
+/* 🎙️ TEXT TO SPEECH (HERO + DEVIL) */
+function speakText(text, speaker){
+  speechSynthesis.cancel();
+
+  const utter = new SpeechSynthesisUtterance(text);
+  const voices = speechSynthesis.getVoices();
+
+  utter.voice = voices.find(v => v.lang.includes("en")) || voices[0];
+  utter.volume = 1;
+
+  if(speaker === "VILLAIN KING"){
+    utter.rate = 0.6;
+    utter.pitch = 0.3;
+
+    utter.onstart = () => playDevilGrowl();
+
+    /* 👿 SECOND ECHO VOICE */
+    const echo = new SpeechSynthesisUtterance(text);
+    echo.voice = utter.voice;
+    echo.rate = 0.5;
+    echo.pitch = 0.15;
+    echo.volume = 0.6;
+
+    setTimeout(() => speechSynthesis.speak(echo), 120);
+  } else {
+    utter.rate = 1;
+    utter.pitch = 1.1;
+  }
+
+  speechSynthesis.speak(utter);
+}
+
+/* 🎨 SET BACKGROUND */
+function changeBackground(i){
+  document.body.style.backgroundImage =
+    `url('${backgrounds[i % backgrounds.length]}')`;
+}
+
+/* ⌨️ TYPE EFFECT + VOICE */
+function typeText(text, speaker){
+  textEl.innerHTML = "";
+  let i = 0;
+  typing = true;
+  typeSound.play();
+
+  speakText(text, speaker);
+
+  const interval = setInterval(() => {
+    textEl.innerHTML += text.charAt(i);
+    i++;
+    if(i >= text.length){
+      clearInterval(interval);
+      typing = false;
+      typeSound.pause();
+      typeSound.currentTime = 0;
+    }
+  }, 35);
+}
+
+function nextDialogue(){
+  if(typing) return;
+
+  clickSound.play();
+  speechSynthesis.cancel();
+
+  if(index < dialogues.length){
+    changeBackground(index);
+    speakerEl.innerText = dialogues[index].speaker;
+    typeText(dialogues[index].text, dialogues[index].speaker);
+    index++;
+  } else {
+    window.location.href = "play.html";
+  }
+}
+
+/* 🚀 START */
+changeBackground(0);
+nextDialogue();
+</script>
+
+
+
+</body>
+</html>

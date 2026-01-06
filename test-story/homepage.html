@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Horror King</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nosifer&family=Orbitron:wght@500&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%}
+
+body{
+  background:url("images/background.jpg") center/cover no-repeat #000;
+  font-family:'Orbitron',sans-serif;
+  overflow:hidden;
+}
+
+/* 🎮 Container */
+.game-container{
+  width:100%;
+  height:100%;
+  padding:24px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  background:rgba(0,0,0,.55);
+  
+}
+
+/* 🔝 Top Bar */
+.top-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:gold;
+  text-shadow:0 0 8px gold;
+}
+
+/* 🪙 Coin */
+.coin-box{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:18px;
+}
+.coin-box img{
+  width:26px;
+  height:26px;
+  filter:drop-shadow(0 0 6px gold);
+}
+
+.shop-btn{
+  background:#222;
+  border:1px solid gold;
+  color:gold;
+  padding:8px 16px;
+  cursor:pointer;
+}
+
+/* 🎮 Center Area */
+.main-content{
+  display:grid;
+  grid-template-columns: 1fr auto;
+  align-items:center;
+}
+
+/* 👹 Anime Center Group */
+.anime-group{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:100px;
+}
+
+.anime-group img{
+  width:clamp(160px,22vw,260px);
+  filter:drop-shadow(0 0 25px crimson);
+  animation:float 4s ease-in-out infinite;
+}
+
+.anime-group img.enemy{
+  filter:drop-shadow(0 0 25px darkred);
+  animation-delay:1s;
+}
+
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-12px)}
+}
+
+/* ▶ Right Buttons */
+.play-section{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  margin-right:40px;
+}
+
+/* 👑 Play */
+.play-btn{
+  font-family:'Nosifer',cursive;
+  font-size:22px;
+  padding:18px 36px;
+  background:linear-gradient(90deg,#ffcc00,#ff9900,#ffcc00);
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  box-shadow:0 0 15px gold,0 0 40px orange;
+  animation:glow 2s infinite alternate,flicker 4s infinite;
+}
+
+@keyframes glow{
+  from{box-shadow:0 0 10px gold}
+  to{box-shadow:0 0 45px orange}
+}
+@keyframes flicker{
+  0%,100%{opacity:1}
+  50%{opacity:.85}
+}
+
+/* Mission button highlight like Play button */
+.mission-center {
+  font-family: 'Nosifer', cursive;
+  font-size: 20px;
+  padding: 16px 32px;
+  background:linear-gradient(90deg, #ff4d4d, #ff0000, #cc0000);
+  border: none;
+  border-radius: 10px;
+  color: #000;
+  cursor: pointer;
+  box-shadow: 0 0 15px red, 0 0 40px red;
+  animation: glow 2s infinite alternate, flicker 4s infinite;
+  transition: transform 0.2s;
+}
+
+/* Hover effect for mission button */
+.mission-center:hover {
+  transform: scale(1.05);
+}
+
+
+/* 🔚 Bottom */
+.bottom-bar{
+  color:crimson;
+}
+
+/* 🩸 Noise */
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:url("https://i.imgur.com/8wKQZgG.png");
+  opacity:.04;
+  pointer-events:none;
+}
+</style>
+</head>
+
+<body>
+
+<audio id="clickSound" src="sound/click.mp3"></audio>
+<audio id="hoverSound" src="sound/hover.mp3"></audio>
+<audio src="sound/ambient.mp3" autoplay loop></audio>
+
+<div class="game-container">
+
+  <!-- 🔝 Top -->
+  <div class="top-bar">
+    <div class="coin-box">
+      <img src="images/coin.png">
+      <span>150</span>
+    </div>
+    <button class="shop-btn">SHOP</button>
+  </div>
+
+  <!-- 🎮 Center -->
+  <div class="main-content">
+
+    <!-- 👹 Anime Center -->
+    <div class="anime-group">
+      <img src="images/character.png">
+      <img src="images/enemy.png" class="enemy">
+    </div>
+
+    <!-- ▶ Right Buttons -->
+    <div class="play-section">
+      <button class="play-btn" id="playBtn">▶ PLAY</button>
+
+      <button class="mission-center">MISSION</button>
+    </div>
+
+  </div>
+
+  <div class="bottom-bar">LEVEL 1</div>
+
+</div>
+<audio id="ambientSound" src="sound/ambient.mp3" loop></audio>
+
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  const ambient = document.getElementById('ambient');
+
+  // Try to play audio on page load
+  ambient.play().catch(() => {
+    // If autoplay is blocked, wait for first user interaction
+    document.body.addEventListener('click', () => ambient.play(), { once: true });
+  });
+});
+
+const playBtn = document.getElementById("playBtn");
+const missionBtn = document.querySelector(".mission-center");
+const shopBtn = document.querySelector(".shop-btn");
+
+const click = document.getElementById("clickSound");
+const hover = document.getElementById("hoverSound");
+
+// Hover sound for Play button
+playBtn.onmouseenter = () => {
+  hover.currentTime = 0;
+  hover.play();
+};
+
+// Click sound + redirect for Play button
+playBtn.onclick = () => {
+  click.play();
+  setTimeout(() => {
+    window.location.href = "play.html"; // redirect after click sound
+  }, 200); // slight delay for sound
+};
+
+// Click sound + redirect for Mission button
+missionBtn.onclick = () => {
+  click.play();
+  setTimeout(() => {
+    window.location.href = "mission.html";
+  }, 200);
+};
+
+// Click sound + redirect for Shop button
+shopBtn.onclick = () => {
+  click.play();
+  setTimeout(() => {
+    window.location.href = "shop.html";
+  }, 200);
+};
+</script>
+
+</body>
+</html>

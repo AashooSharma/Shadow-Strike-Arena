@@ -898,5 +898,5 @@ document.addEventListener('DOMContentLoaded', () => {
   // Menu buttons
   resumeBtn.addEventListener('click', resumeGame)
   restartBtn.addEventListener('click', () => window.location.reload())
-  quitBtn.addEventListener('click', () => (window.location.href = 'home.html'))
+  quitBtn.addEventListener('click', () => (window.location.href = 'index.html'))
 })

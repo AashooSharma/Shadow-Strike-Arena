@@ -40,3 +40,47 @@ body>div>div:first-child {
     left: 0;
     z-index: 10;
 }
+
+/* ===== MENU BUTTON ===== */
+#menuBtn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 20;
+  font-size: 20px;
+  padding: 8px 14px;
+  cursor: pointer;
+  border: 3px solid white;
+  background: black;
+  color: white;
+}
+
+/* ===== PAUSE MENU ===== */
+#pauseMenu {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: none;
+  z-index: 30;
+
+  width: 60px;
+  /* margin-bottom: 100px; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#pauseMenu h2 {
+  margin-bottom: 20px;
+}
+
+#pauseMenu button {
+  margin: 10px;
+  padding: 12px 30px;
+  font-size: 14px;
+  cursor: pointer;
+  border: 3px solid white;
+  background: black;
+  color: white;
+}

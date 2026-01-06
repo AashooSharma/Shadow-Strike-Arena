@@ -55,51 +55,44 @@ class Sprite {
   // }
 
   draw() {
-  // ===== FULL SCREEN BG (COVER MODE) =====
-  if (this.isBackground) {
-    const canvasRatio = canvas.width / canvas.height
-    const imageRatio = this.image.width / this.image.height
+    // ===== FULL SCREEN BG (COVER MODE) =====
+    if (this.isBackground) {
+      const canvasRatio = canvas.width / canvas.height
+      const imageRatio = this.image.width / this.image.height
 
-    let drawWidth, drawHeight, offsetX, offsetY
+      let drawWidth, drawHeight, offsetX, offsetY
 
-    if (imageRatio > canvasRatio) {
-      // image wide hai
-      drawHeight = canvas.height
-      drawWidth = drawHeight * imageRatio
-      offsetX = (canvas.width - drawWidth) / 2
-      offsetY = 0
-    } else {
-      // image tall hai
-      drawWidth = canvas.width
-      drawHeight = drawWidth / imageRatio
-      offsetX = 0
-      offsetY = (canvas.height - drawHeight) / 2
+      if (imageRatio > canvasRatio) {
+        // image wide hai
+        drawHeight = canvas.height
+        drawWidth = drawHeight * imageRatio
+        offsetX = (canvas.width - drawWidth) / 2
+        offsetY = 0
+      } else {
+        // image tall hai
+        drawWidth = canvas.width
+        drawHeight = drawWidth / imageRatio
+        offsetX = 0
+        offsetY = (canvas.height - drawHeight) / 2
+      }
+
+      c.drawImage(this.image, offsetX, offsetY, drawWidth, drawHeight)
+      return
     }
 
+    // ===== NORMAL SPRITES =====
     c.drawImage(
       this.image,
-      offsetX,
-      offsetY,
-      drawWidth,
-      drawHeight
+      this.framesCurrent * (this.image.width / this.framesMax),
+      0,
+      this.image.width / this.framesMax,
+      this.image.height,
+      this.position.x - this.offset.x,
+      this.position.y - this.offset.y,
+      (this.image.width / this.framesMax) * this.scale,
+      this.image.height * this.scale
     )
-    return
   }
-
-  // ===== NORMAL SPRITES =====
-  c.drawImage(
-    this.image,
-    this.framesCurrent * (this.image.width / this.framesMax),
-    0,
-    this.image.width / this.framesMax,
-    this.image.height,
-    this.position.x - this.offset.x,
-    this.position.y - this.offset.y,
-    (this.image.width / this.framesMax) * this.scale,
-    this.image.height * this.scale
-  )
-}
-
 
   animateFrames() {
     this.framesElapsed++
@@ -287,6 +280,14 @@ class Fighter extends Sprite {
         if (this.image !== this.sprites.death.image) {
           this.image = this.sprites.death.image
           this.framesMax = this.sprites.death.framesMax
+          this.framesCurrent = 0
+        }
+        break
+
+      case 'dodge':
+        if (this.image !== this.sprites.dodge.image) {
+          this.image = this.sprites.dodge.image
+          this.framesMax = this.sprites.dodge.framesMax
           this.framesCurrent = 0
         }
         break

@@ -25,8 +25,8 @@ const level = parseInt(urlParams.get('level')) || 1
 
 let backgroundImage = './img/background.jpg'
 
-if (level === 2) backgroundImage = './img/background2.jpg'
-if (level === 3) backgroundImage = './img/background3.jpg'
+if (level === 2) backgroundImage = './BG-7/bg2.jpg'
+if (level === 3) backgroundImage = './BG-7/bg3.jpg'
 
 // ===== BACKGROUND =====
 // const background = new Sprite({
